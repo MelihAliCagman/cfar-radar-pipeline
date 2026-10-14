@@ -8,3 +8,4 @@ __pycache__/
 output_quick/
 output_quick.log
 reports/
+output.log

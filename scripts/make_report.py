@@ -287,14 +287,13 @@ for sc, label in (("homogeneous", "Homojen gürültü"), ("clutter_edge", "Clutt
                                   col_widths=[2.6 * cm] + [1.5 * cm] * len(sel))]
 
 story += [Spacer(1, 6), P("Yorum", H2)] + bullets([
-    "<b>Homojen gürültüde</b> CA ve OS pratikte aynıdır; Pd = 0.5 civarı ≈ 15–16 dB'dedir. Teorik bağımsız-hücre "
-    "değerinden yaklaşık 2–3 dB sağdadır; fark pencere kaybı, scalloping ve CFAR kayıplarından gelir.",
+    "<b>Homojen gürültüde</b> CA ve OS pratikte aynıdır; Pd = 0.5 civarı ≈ 15–16 dB'dedir. Bu nokta ideal "
+    "bağımsız-hücre değerinin birkaç dB sağındadır; fark pencere kaybı, scalloping ve CFAR kayıplarından gelir.",
     "<b>Yakın güçlü hedef senaryosunda</b> CA-CFAR hedefi hemen hiç bulamaz: eğitim penceresindeki 15 dB daha güçlü "
     "komşu ortalamayı şişirir, eşik hedefin üstüne çıkar (maskeleme). OS-CFAR, k. sıralı istatistik tek bir güçlü "
     "hücreden etkilenmediği için yüksek SNR'larda Pd ≈ 1'e ulaşır.",
-    "<b>Clutter kenarında</b> iki dedektör benzer davranır; OS yüksek SNR'da hafif öndedir. Bu senaryoda clutter "
-    "Doppler ekseninde de yayılmış olduğundan hedef kısmen clutter'la örtüşür ve her iki dedektör de "
-    "yüksek SNR'a kadar ilerler."])
+    "<b>Clutter kenarında</b> iki dedektör benzer davranır; OS yüksek SNR'da hafif öndedir. CA yüksek SNR'da "
+    "0.95–0.97 civarında kalırken OS 20 dB'den itibaren 1.0'a ulaşır."])
 
 pfa = read_csv("pfa.csv") if (OUT / "pfa.csv").exists() else []
 story += [P("4.3 Gerçekleşen Pfa", H2),
