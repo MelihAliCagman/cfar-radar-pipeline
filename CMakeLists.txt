@@ -15,6 +15,7 @@ add_compile_options(-Wall -Wextra -Wpedantic)
 # Tüm sinyal işleme kodu tek bir statik kütüphanede; demo ve testler buna bağlanır.
 add_library(radar STATIC
   src/signal_gen.cpp
+  src/fft.cpp
 )
 target_include_directories(radar PUBLIC src)
 

@@ -6,3 +6,4 @@ function(add_radar_test name)
 endfunction()
 
 add_radar_test(test_signal_gen)
+add_radar_test(test_fft)
