@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <cmath>
 
 #include "pulse_compression.h"
@@ -17,7 +18,7 @@ std::size_t peak_index(const CMatrix& m, std::size_t row) {
 
 int main() {
   const RadarParams p;
-  const PulseCompressor pc(make_lfm_chirp(p), p.num_samples);
+  const PulseCompressor pc(make_lfm_chirp(p), p.num_samples, WindowType::Rectangular);
 
   // 1) Tek hedef, gürültüsüz: tepe tam yankının başladığı örnekte, yüksekliği A * L.
   {
@@ -70,6 +71,30 @@ int main() {
     CHECK(std::abs(out(0, 100)) > 0.8 * p.chirp_samples());
     CHECK(std::abs(out(0, 104)) > 0.8 * p.chirp_samples());
     CHECK(std::abs(out(0, 102)) < 0.3 * p.chirp_samples());  // aradaki çukur
+  }
+
+  // 5) Hamming ağırlığı menzil yan loblarını belirgin biçimde bastırır (tepeden >=8 hücre uzakta).
+  {
+    const PulseCompressor weighted(make_lfm_chirp(p), p.num_samples, WindowType::Hamming);
+    CMatrix frame(p.num_pulses, p.num_samples);
+    Target t;
+    t.range_m = 100.0 * p.range_bin_m();
+    add_target(frame, p, t);
+    auto worst_sidelobe_db = [&](const PulseCompressor& c) {
+      const CMatrix out = c.compress(frame);
+      double peak = 0.0, side = 0.0;
+      for (std::size_t n = 0; n < out.cols(); ++n) {
+        const double a = std::abs(out(0, n));
+        peak = std::max(peak, a);
+        const long dist = std::labs(static_cast<long>(n) - 100);
+        if (dist >= 8) side = std::max(side, a);
+      }
+      return 20.0 * std::log10(side / peak);
+    };
+    const double rect_db = worst_sidelobe_db(pc);
+    const double hamm_db = worst_sidelobe_db(weighted);
+    CHECK(hamm_db < rect_db - 10.0);
+    CHECK(hamm_db < -30.0);
   }
 
   return testing::test_summary("test_pulse_compression");

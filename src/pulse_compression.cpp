@@ -7,14 +7,19 @@
 
 namespace radar {
 
-PulseCompressor::PulseCompressor(const Chirp& reference, std::size_t num_samples) {
+PulseCompressor::PulseCompressor(const Chirp& reference, std::size_t num_samples,
+                                 WindowType weighting) {
   if (reference.size() > num_samples)
     throw std::invalid_argument("PulseCompressor: chirp longer than pulse window");
 
   // Referansı darbe uzunluğuna sıfırla doldur, bir kez FFT al ve eşleniğini sakla.
   // Her darbede yeniden hesaplamak gereksiz: referans hiç değişmiyor.
   conj_reference_spectrum_.assign(num_samples, Complex(0.0, 0.0));
-  std::copy(reference.begin(), reference.end(), conj_reference_spectrum_.begin());
+  // Ağırlıklandırma: LFM'de zaman = frekans olduğundan zarfa pencere uygulamak spektrumu
+  // da pencereler.
+  const std::vector<double> w = make_window(weighting, reference.size());
+  for (std::size_t i = 0; i < reference.size(); ++i)
+    conj_reference_spectrum_[i] = reference[i] * w[i];
   fft(conj_reference_spectrum_);
   for (Complex& v : conj_reference_spectrum_) v = std::conj(v);
 }
