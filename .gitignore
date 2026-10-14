@@ -5,3 +5,6 @@ output/
 __pycache__/
 .vscode/
 .cache/
+output_quick/
+output_quick.log
+reports/
