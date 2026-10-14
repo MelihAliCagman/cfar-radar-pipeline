@@ -18,6 +18,7 @@ add_library(radar STATIC
   src/fft.cpp
   src/pulse_compression.cpp
   src/range_doppler.cpp
+  src/cfar.cpp
 )
 target_include_directories(radar PUBLIC src)
 
